@@ -5,6 +5,11 @@
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
         <script>
             var map;
+            var infowindow;
+
+            var request;
+            var service;
+            var markers = [];
             function initMap() {
               // Create a map object and specify the DOM element for display.
               var center = new google.maps.LatLng(37.422, -122.084058);
@@ -13,31 +18,59 @@
                 zoom: 13
               });
               
-              var request = {
+              request = {
                 location: center,
                 radius: 8047, // TODO: radius should prob be user input
                 types: ['cafe']  // TODO: change this to user input
-              }
+              };
+              infowindow = new google.maps.InfoWindow();
 
-              var service = new google.maps.places.PlacesService(map);
+              service = new google.maps.places.PlacesService(map);
 
               service.nearbySearch(request, callback); 
+
+              google.maps.event.addListener(map, 'rightclick', function(event){
+                map.setCenter(event.latLng)
+                clearResults(markers)
+
+                var request = {
+                  location: event.latLng,
+                  radius: 8047, // TODO: radius should prob be user input
+                  types: ['cafe']  // TODO: change this to user input
+                };
+                service.nearbySearch(request, callback);
+                
+              })
+
             }
             function callback(results, status) {
               if(status == google.maps.places.PlacesServiceStatus.OK){
                   for (var i = 0; i < results.length; i++) {
-                      createMarker(results[i]);
+                      markers.push(createMarker(results[i]));
                   }
               }
             }
             function createMarker(place) {
-            var placeLoc = place.geometry.location;
-            var marker = new google.maps.Marker({
-                map: map,
-                position: place.geometry.location
-            });
-        
+              var placeLoc = place.geometry.location; 
+              var marker = new google.maps.Marker({
+                  map: map,
+                  position: place.geometry.location
+              });
+              google.maps.event.addListener(marker, 'click', function(){
+                infowindow.setContent(place.name);
+                infowindow.open(map, this);
+              });
+            
+              return marker;
             }
+            
+            function clearResults(markers) {
+              for (var m in markers){
+                markers[m].setMap(null)
+              }
+              markers = []
+            }
+
        </script>
           <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=***REMOVED***&callback=initMap"
           async defer></script>
