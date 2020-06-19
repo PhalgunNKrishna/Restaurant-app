@@ -1,94 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-        <script>
-            var map;
-            var infowindow;
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+		<script>
+			var map;
+var infowindow;
 
-            var request;
-            var service;
-            var markers = [];
-            var name = window.prompt("What kind of food?");
-            var done = 0;
-            function initMap() {
-              var center;
-              // Create a map object and specify the DOM element for display.
-              function success(position) {
-                // center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                map = new google.maps.Map(document.getElementById('map'), {
-                center: center, // TODO: center should be user location
-                zoom: 13
-                });
-                request = {
-                  location: map.getCenter(),
-                  radius: 8047, // TODO: radius should prob be user input
-                  query: name  // TODO: change this to user input, uses name but 
-                };
-                infowindow = new google.maps.InfoWindow();
-                service = new google.maps.places.PlacesService(map);
-                  
-                service.textSearch(request, callback); 
-                // google.maps.event.addListener(map, 'rightclick', function(event){
-                // map.setCenter(event.latLng)
-                // clearResults(markers)
+var request;
+var service;
+var markers = [];
 
-                // var request = {
-                //   location: event.latLng,
-                //   radius: 8047, // TODO: radius should prob be user input
-                //   query: name  // TODO: change this to user input
-                // };
-                // service.textSearch(request, callback);
-                // })
-              }
-              if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(success);
-              }
+// TODO: PK changes start here -----------------------------------------------------
 
-            }
-            function callback(results, status) {
-              if(status == google.maps.places.PlacesServiceStatus.OK){
-                  for (var i = 0; i < results.length; i++) {
-                      markers.push(createMarker(results[i]));
-                  }
-              }
-            }
-            function createMarker(place) {
-              var placeLoc = place.geometry.location; 
-              var marker = new google.maps.Marker({
-                  map: map,
-                  position: place.geometry.location
-              });
-              google.maps.event.addListener(marker, 'click', function(){
-                infowindow.setContent(place.name);
-                infowindow.open(map, this);
-              });
-            
-              return marker;
-            }
-            
-            function clearResults(markers) {
-              for (var m in markers){
-                markers[m].setMap(null)
-              }
-              markers = []
-            }
+var users_num = window.prompt("How many people are in your group?");
+var users_inp = [];
+for (var i = 0; i < users_num; i++) {
+	var j = i + 1;
+	console.log("With regard to person " + j + "from your group:");
+	users_inp.push(window.prompt("What type of food does this person want?"));
+}
 
-       </script>
-          <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=***REMOVED***&callback=initMap"
-          async defer></script>
-        <style>
-        html, body, #map {
-            height: 100%;
-            margin: 0px;
-            padding: 0px;
+// TODO: PK changes end here   -----------------------------------------------------
+
+var done = 0;
+function initMap() {
+	var center;
+	// Create a map object and specify the DOM element for display.
+	function success(position) {
+		center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+		map = new google.maps.Map(document.getElementById('map'), {
+			center: center, // TODO: center should be user location
+			zoom: 13
+		});
+		request = {
+			location: map.getCenter(),
+			radius: 8047, // TODO: radius should prob be user input
+			// TODO: PK change here:
+			query: users_inp,
+		};
+		infowindow = new google.maps.InfoWindow();
+		service = new google.maps.places.PlacesService(map);
+
+		// TODO: PK change here
+		//service.textSearch(request, callback); 
+
+		restDecider(users_inp);
+	}
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(success);
+	}
+
+}
+
+// TODO: PK changes start here -----------------------------------------------------
+function restDecider(users_inp) {
+	let restaurs = new Map();
+	for (var i = 0; i < users_inp.length; i++) {
+		request = {
+			location: map.getCenter(),
+			radius: 8047,
+			query: users_inp[i],
+		};
+		//TODO: The textSearch below is not right. callback should not be called here
+		//var res = service.textSearch(request, callback);
+		for (var j = 0; j < res.length; j++) {
+			if (restaurs.has(res[j]) == false) {
+				restaurs.set(res[j], 1);
+			} else {
+				var temp_val = restaurs.get(res[j]);
+				temp_val++;
+				restaurs.set(res[j], temp_val);
+			}
+		}
+	}
+
+	// create an array
+	// iterate over all the elements of the map and put into array
+	// sort the array in descending order
+
+	var rests_unranked = [];
+	var rests_names = [];
+
+	for (let value of restaurs.values()) {
+		rests_unranked.push(value);
+	}
+
+	var rests_ranked = sort(rests_unranked);
+
+	var iter = 0;
+
+	for (let key of restaurs.keys()) {
+		if (restaurs.get(key) == rests_ranked[iter]) {
+			rests_names.push(key);
+		}
+		iter++;
+	}
+}
+
+function sort(li) {
+    var swapp;
+    var n = li.length-1;
+    var x=li;
+    do {
+        swapp = false;
+        for (var i=0; i < n; i++)
+        {
+            if (x[i] < x[i+1])
+            {
+               var temp = x[i];
+               x[i] = x[i+1];
+               x[i+1] = temp;
+               swapp = true;
+            }
         }
-        </style>
-    </head>
-    <body>
-        <div id="map">
-        </div>
-    </body>
+        n--;
+    } while (swapp);
+ return x; 
+}
+
+// TODO: PK changes end here -------------------------------------------------------
+
+function callback(results, status) {
+	if(status == google.maps.places.PlacesServiceStatus.OK){
+		for (var i = 0; i < results.length; i++) {
+			markers.push(createMarker(results[i]));
+		}
+	}
+}
+function createMarker(place) {
+	var placeLoc = place.geometry.location; 
+	var marker = new google.maps.Marker({
+		map: map,
+		position: place.geometry.location
+	});
+	google.maps.event.addListener(marker, 'click', function(){
+		infowindow.setContent(place.name);
+		infowindow.open(map, this);
+	});
+
+	return marker;
+}
+
+function clearResults(markers) {
+	for (var m in markers){
+		markers[m].setMap(null)
+	}
+	markers = []
+}
+
+		</script>
+		<script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=***REMOVED***&callback=initMap"
+			async defer></script>
+		<style>
+html, body, #map {
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+		</style>
+	</head>
+	<body>
+		<div id="map">
+		</div>
+	</body>
 </html>
