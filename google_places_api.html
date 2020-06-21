@@ -10,8 +10,8 @@ var infowindow;
 var request;
 var service;
 var markers = [];
-//let restaurs = new Map();
-var restaurs;
+let restaurs = new Map();
+//var restaurs;
 var rests_unranked = [];
 var rests_ranked = [];
 var rests_names = [];
@@ -55,7 +55,7 @@ function initMap() {
 // TODO: PK changes start here -----------------------------------------------------
 function restDecider(users_inp) {
 
-	let restaurs = new Map();
+	//let restaurs = new Map();
 	users_iter = 1;
 
 	for (var i = 0; i < users_inp.length; i++) {
