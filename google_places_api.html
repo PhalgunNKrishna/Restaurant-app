@@ -75,6 +75,8 @@ function restDecider(users_inp) {
 
 function callback(results, status) {
 
+	//top_five = [];
+
 	if (status == google.maps.places.PlacesServiceStatus.OK) {
 		for (var j = 0; j < results.length; j++) {
 			if (restaurs.has(results[j]) == false) {
@@ -101,7 +103,20 @@ function callback(results, status) {
 				}
 				iter++;
 			}
+
+			// TODO: NEWEST CHANGES ARE HERE
+
+		/*	for (var i = 0; i < 5; i++) {
+				top_five.push(rests_names[i]);
+			}
+
+			console.log(top_five);
+
 			for (var i = 0; i < rests_names.length; i++) {
+				markers.push(createMarker(rests_names[i]));
+			}
+		*/	
+			for (var i = 0; i < 5; i++) {
 				markers.push(createMarker(rests_names[i]));
 			}
 		}
