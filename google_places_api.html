@@ -11,41 +11,64 @@ var request;
 var service;
 var markers = [];
 let restaurs = new Map();
-//var restaurs;
 var rests_unranked = [];
 var rests_ranked = [];
 var rests_names = [];
 var users_iter;
+var rendererOptions = {
+	draggable: true
+};
 
 // TODO: PK changes start here -----------------------------------------------------
 
 //var users_num = window.prompt("How many people are in your group?");
 var users_num;
 var users_inp = [];
+var directionsDisplay;
+var directionsSerrice;
 
 // TODO: PK changes end here   -----------------------------------------------------
 
 var done = 0;
 function initMap() {
 	var center;
+	directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions); // check to see if only one ';' needed
+	directionsService = new google.maps.DirectionsService();
+	infowindow = new google.maps.InfoWindow(
+		{ 
+			size: new google.maps.Size(150,50)
+		});
 	users_num = window.prompt("How many people are in your group?");
 	// Create a map object and specify the DOM element for display.
-	function success(position) {
-		for (var i = 0; i < users_num; i++) {
-			var j = i + 1;
-			//console.log("With regard to person " + j + " from your group:");
-			users_inp.push(window.prompt("What type of food does person " + j + " want?"));
-		}
-		center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-		map = new google.maps.Map(document.getElementById('map'), {
-			center: center, // TODO: center should be user location
-			zoom: 13
-		});
-		infowindow = new google.maps.InfoWindow();
-		service = new google.maps.places.PlacesService(map);
+		function success(position) {
+			for (var i = 0; i < users_num; i++) {
+				var j = i + 1;
+				//console.log("With regard to person " + j + " from your group:");
+				users_inp.push(window.prompt("What type of food does person " + j + " want?"));
+			}
+			center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+			/*map = new google.maps.Map(document.getElementById('map'), {
+				center: center, // TODO: center should be user location
+				zoom: 13
+			});*/
+				var myOptions = {
+					zoom: 13,
+					center: center,
+					mapTypeControl: true,
+					mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
+					navigationControl: true,
+					mapTypeId: google.maps.MapTypeId.ROADMAP // change the typeId later to something else
+				}
+			directionsDisplay.setMap(map);
+			directionsDisplay.setPanel(document.getElementById("directionsPanel"));
+			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+			service = new google.maps.places.PlacesService(map);
+			google.maps.event.addListener(map, 'click', function() {
+				infowindow.close();
+			});
 
-		restDecider(users_inp);
-	}
+			restDecider(users_inp);
+		}
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(success);
 	}
@@ -106,7 +129,7 @@ function callback(results, status) {
 
 			// TODO: NEWEST CHANGES ARE HERE
 
-		/*	for (var i = 0; i < 5; i++) {
+			/*	for (var i = 0; i < 5; i++) {
 				top_five.push(rests_names[i]);
 			}
 
@@ -115,10 +138,10 @@ function callback(results, status) {
 			for (var i = 0; i < rests_names.length; i++) {
 				markers.push(createMarker(rests_names[i]));
 			}
-		*/	
-			for (var i = 0; i < 5; i++) {
-				markers.push(createMarker(rests_names[i]));
-			}
+			*/	
+				for (var i = 0; i < rests_names.length; i++) {
+					markers.push(createMarker(rests_names[i]));
+				}
 		}
 		users_iter++;
 	}
@@ -180,7 +203,12 @@ html, body, #map {
 		</style>
 	</head>
 	<body>
-		<div id="map">
+		<!-- <div id="map"> -->
+		<div id="map_canvas" style="width: 550px; height: 450px"></div> 
+		<!-- new div id below> -->
+		<div id="directionsPanel"></div>
 		</div>
 	</body>
 </html>
+
+
