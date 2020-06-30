@@ -142,7 +142,7 @@ function callback(results, status) {
 			}
 			*/	
 				for (var i = 0; i < rests_names.length; i++) {
-					markers.push(createMarker(rests_names[i]), i);
+					markers.push(createMarker(rests_names[i], i+1));
 				}
 		}
 		users_iter++;
@@ -200,6 +200,8 @@ function getDirections(marker) {
 
 	var request = {};
 
+	var dest = marker.position.lat() + ',' + marker.position.lng();
+
 	/*
 	if (document.getElementByID("walk").checked) {
 		request.travelMode = google.maps.DirectionsTravelMode.WALKING;
@@ -211,7 +213,7 @@ function getDirections(marker) {
 	request.travelMode = google.maps.DirectionsTravelMode.DRIVING;
 	
 	request.origin = center;
-	request.destination = marker;
+	request.destination = dest;
 
 	directionsService.route(request, function(response, status) {
 		if (status == google.maps.DirectionsStatus.OK) {
