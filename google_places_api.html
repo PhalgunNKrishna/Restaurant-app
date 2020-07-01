@@ -176,15 +176,18 @@ function createMarker(place, i) {
 	var placeLoc = place.geometry.location; 
 	var marker = new google.maps.Marker({
 		map: map,
-		position: place.geometry.location
+		position: place.geometry.location,
+		the_place: place
 	}); 
 
 	gmarkers.push(marker);
 
+	var name = place.name;
+
 	var ranking = '<br />This restaurant has a ranking of ' + i + '<br />';
 	html = place.name + ranking;
-	html = html + '<br>Directions: <a href="javascript:getDirections(marker)">To here<\/a>'; 
-
+	html = html + '<br>Directions: <a href="javascript:getDirections(\''+name+'\')">To here<\/a>'; 
+	
 	var contentString = html;
 
 	google.maps.event.addListener(marker, 'click', function(){
@@ -196,7 +199,19 @@ function createMarker(place, i) {
 	return marker;
 }
 
-function getDirections(marker) {
+function getDirections(name) {
+	
+	var marker;
+	console.log(name);
+	for (var i = 0; i < gmarkers.length; i++) {
+		if (gmarkers[i].the_place.name == name) {
+			marker = gmarkers[i];
+		} 
+	}
+
+	/*if (marker == null) {
+		console.log("nope");
+	}*/
 
 	var request = {};
 
