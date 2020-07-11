@@ -22,45 +22,36 @@ var rendererOptions = {
 	draggable: true
 };
 
-// TODO: PK changes start here -----------------------------------------------------
 
-//var users_num = window.prompt("How many people are in your group?");
 var users_num;
 var users_inp = [];
 var directionsDisplay;
 var directionsSerrice;
 var center;
 
-// TODO: PK changes end here   -----------------------------------------------------
 
 var done = 0;
 function initMap() {
-	directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions); // check to see if only one ';' needed
+	directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions); 
 	directionsService = new google.maps.DirectionsService();
 	infowindow = new google.maps.InfoWindow(
 		{ 
 			size: new google.maps.Size(150,50)
 		});
 	users_num = window.prompt("How many people are in your group?");
-	// Create a map object and specify the DOM element for display.
 		function success(position) {
 			for (var i = 0; i < users_num; i++) {
 				var j = i + 1;
-				//console.log("With regard to person " + j + " from your group:");
 				users_inp.push(window.prompt("What type of cuisine does person " + j + " want?"));
 			}
 			center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-			/*map = new google.maps.Map(document.getElementById('map'), {
-				center: center, // TODO: center should be user location
-				zoom: 13
-			});*/
 				var myOptions = {
 					zoom: 13,
 					center: center,
 					mapTypeControl: true,
 					mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU},
 					navigationControl: true,
-					mapTypeId: google.maps.MapTypeId.ROADMAP // change the typeId later to something else
+					mapTypeId: google.maps.MapTypeId.ROADMAP 
 				}
 			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 			directionsDisplay.setMap(map);
@@ -78,10 +69,8 @@ function initMap() {
 
 }
 
-// TODO: PK changes start here -----------------------------------------------------
 function restDecider(users_inp) {
 
-	//let restaurs = new Map();
 	users_iter = 1;
 
 	for (var i = 0; i < users_inp.length; i++) {
@@ -90,10 +79,6 @@ function restDecider(users_inp) {
 			radius: 8047,
 			query: users_inp[i],
 		};
-		//TODO: The textSearch below is not right. callback should not be called here
-		//var res = service.textSearch(request, callback);
-
-		// SHOULD be right
 		service.textSearch(request, callback);
 
 	}
@@ -115,9 +100,6 @@ function callback(results, status) {
 			}
 		}
 
-		for (let entry of restaurs.keys()) {
-			console.log(entry);
-		}
 
 		if (users_iter == users_num) {
 			for (let value of restaurs.values()) {
@@ -125,7 +107,6 @@ function callback(results, status) {
 			}
 
 			rests_ranked = sort(rests_unranked);
-			console.log(rests_ranked);
 
 			for (let key of restaurs.keys()) {
 				for (var i = 0; i < rests_ranked.length; i++) {
@@ -142,11 +123,9 @@ function callback(results, status) {
 				}
 			}
 
-			console.log(final_rests);
 
-			// TODO: NEWEST CHANGES ARE HERE
 			for (var i = 0; i < 5; i++) {
-				if (i >= final_rests.length){ // if theres less than 5 resuts
+				if (i >= final_rests.length){ 
 					break;
 				}
 				top_five += (i + 1) + ") " + final_rests[i].name + "<br>";
@@ -183,7 +162,6 @@ function sort(li) {
 	return x; 
 }
 
-// TODO: PK changes end here -------------------------------------------------------
 
 function createMarker(place, i) {
 	var placeLoc = place.geometry.location; 
@@ -195,7 +173,6 @@ function createMarker(place, i) {
 
 	gmarkers.push(marker);
 
-	//var name = place.name;
 
 	var ranking = '<br />This restaurant has a ranking of ' + i + '<br />';
 	html = place.name + ranking;
@@ -205,7 +182,6 @@ function createMarker(place, i) {
 
 	google.maps.event.addListener(marker, 'click', function(){
 		infowindow.setContent(contentString);
-		//infowindow.open(map, this);
 		infowindow.open(map, marker);
 	});
 
@@ -215,28 +191,15 @@ function createMarker(place, i) {
 function getDirections(loc) {
 	
 	var marker;
-	console.log(name);
 	for (var i = 0; i < gmarkers.length; i++) {
 		if (gmarkers[i].position == loc) {
 			marker = gmarkers[i];
 		} 
 	}
 
-	/*if (marker == null) {
-		console.log("nope");
-	}*/
-
 	var request = {};
 
 	var dest = marker.position.lat() + ',' + marker.position.lng();
-
-	/*
-	if (document.getElementByID("walk").checked) {
-		request.travelMode = google.maps.DirectionsTravelMode.WALKING;
-	} else {
-		request.travelMode = google.maps.DirectionsTravelMode.DRIVING;
-	}
-	*/
 
 	request.travelMode = google.maps.DirectionsTravelMode.DRIVING;
 	
@@ -249,13 +212,6 @@ function getDirections(loc) {
 		}
 	});
 }
-
-/*function tohere(html, marker) {
-	infowindow.setContent(html);
-	infowindow.open(map, marker);
-}*/
-	
-
 
 function clearResults(markers) {
 	for (var m in markers){
