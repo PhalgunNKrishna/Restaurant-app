@@ -127,18 +127,19 @@ function callback(results, status) {
 			rests_ranked = sort(rests_unranked);
 			console.log(rests_ranked);
 
-			var iter = 0;
-
 			for (let key of restaurs.keys()) {
-				if (restaurs.get(key) == rests_ranked[iter]) {
-					for (var i = 0; i < results.length; i++) {
-						var name = results[i].name;
-						if (key == name) {
-							final_rests.push(results[i]);	
-						}
-					}
+				for (var i = 0; i < rests_ranked.length; i++) {
+					if (restaurs.get(key) == rests_ranked[i]) {
+						for (var j = 0; j < results.length; j++) {
+							var name = results[j].name;
+							if (key == name) {
+								final_rests.push(results[j]);	
+								break;
+							}
+						} 
+						break;
+					} 
 				}
-				iter++;
 			}
 
 			console.log(final_rests);
