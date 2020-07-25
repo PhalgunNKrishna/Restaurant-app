@@ -5,7 +5,7 @@ By Phalgun Krishna and Ryan Bui
 A web application side project that ranks the restaurants in a group's vicinity based on how well each restaurant matches all the group members' cuisine preferences. The application includes a map of restaurants and provides directions to restaurants if prompted.
 
 ## Instructions to Run Project
-In order to run the project, simply load the google_places_api.html and follow the prompts
+In order to run the project, simply load the google_places_api.html and follow the prompts.
 
 ## Overview of the Project
 The backbone of our restaurant deciding algorithm is a map data sctructure with restaurant names as its keys and whose corresponding values equal the number of times a google API query outputs the name ofthat restaurant. The following pseudo-code provides the basic understanding of this algorithm:
@@ -17,11 +17,11 @@ Imagine there have been 3 queries to the google API as follows:
 
 m = new map(string, int)
 
-for each restaurant name outputted by the query:
-	if this restaurant is not one of the map's keys:
-		 make it an entry with key = restaurant and value = 1
-	else:
-		find the entry in the map and increment it's value by 1
+for each restaurant name outputted by the query:  
+	if this restaurant is not one of the map's keys:  
+		 make it an entry with key = restaurant and value = 1  
+	else:  
+		find the entry in the map and increment it's value by 1  
 
 The following snippet from our code does exactly this:
 
