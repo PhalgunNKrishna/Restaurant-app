@@ -5,7 +5,8 @@ By Phalgun Krishna and Ryan Bui
 A web application side project that ranks the restaurants in a group's vicinity based on how well each restaurant matches all the group members' cuisine preferences. The application includes a map of restaurants and provides directions to restaurants if prompted.
 
 ## Instructions to Run Project
-In order to run the project, simply load the google_places_api.html and follow the prompts.
+In order to run the project, simply load the google_places_api.html and follow the prompts.  
+**Note:** If run more than once, it is possible that the application will output different restaurants as the top 5. If the user keeps re-running the application, the user will find that the top-5 restaurants are mostly consistent. An explanation for this is given in "Overview of the Project."
 
 ## Overview of the Project
 The backbone of our restaurant deciding algorithm is a map data sctructure with restaurant names as its keys and whose corresponding values equal the number of times a google API query outputs the name ofthat restaurant. The following pseudo-code provides the basic understanding of this algorithm:
@@ -39,7 +40,7 @@ if (status == google.maps.places.PlacesServiceStatus.OK) {
 		}
 }
 ```
-The algorithm would then sort the keys based on their values in descending order and rank restaurants by this sorted list of restaurants. 
+The algorithm would then sort the keys based on their values in descending order and rank restaurants by this sorted list of restaurants. Because many restaurants could potentially hold the same value, the ranking system sometimes makes an aribtrary ranking decision. This explains why multiple re-runs of our applicaton could potentially output different "Top 5 Choices" in the side-bar.
 
 ### Challenges
 Our biggest challenge was simply starting the project. While obtaining the google API key was fairly easy, our lack of experience with HTML and javascript proved difficult to overcome. Thankfully, a YouTube video for locating cofee shops provided us with a strong basis for our code. The link to the first of three videos is here: https://www.youtube.com/watch?v=eLGtNm4dSxc. Another challenge we found was creating a function to get directions to the markers displayed in our application. While this link, http://www.geocodezip.com/v3_MW_example_map4c.html , provided us with an idea of how to attempt this, we still found great difficult in calling our javascript getDirections function from the HTML embedded within the marker. 
