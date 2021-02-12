@@ -2,6 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
+		<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 		<script>
 			var map;
@@ -31,6 +32,11 @@ var center;
 
 
 var done = 0;
+
+/* NEW VARIABLES (following 2 lines) */
+let inp_map = new Map();
+var list_inp = "";
+
 function initMap() {
 	directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions); 
 	directionsService = new google.maps.DirectionsService();
@@ -87,7 +93,8 @@ function restDecider(users_inp) {
 function callback(results, status) {
 
 	var top_five = "";
-
+	
+	
 	if (status == google.maps.places.PlacesServiceStatus.OK) {
 		for (var j = 0; j < results.length; j++) {
 			var name = results[j].name;
@@ -100,7 +107,7 @@ function callback(results, status) {
 			}
 		}
 
-
+		
 		if (users_iter == users_num) {
 			for (let value of restaurs.values()) {
 				rests_unranked.push(value);
@@ -133,11 +140,32 @@ function callback(results, status) {
 
 			document.getElementById("output").innerHTML = top_five;
 
+
+			/* NEW CODE BLOCK */
+			results_names = [];
+			for (var e = 0; e < results.length; e++) {
+				results_names.push(results[e].name);
+			}
+			inp_map.set(users_inp[users_iter - 1], results_names);
+			list_inp += "Preference " + users_iter + " : " + results_names + "<br> <br>";
+
+			document.getElementById("list").innerHTML = list_inp;
+
 			for (var i = 0; i < final_rests.length; i++) {
 				markers.push(createMarker(final_rests[i], i+1));
 			}
+		} else {
+
+		/* NEW CODE BLOCK */
+		results_names = [];
+		for (var e = 0; e < results.length; e++) {
+			results_names.push(results[e].name);
 		}
+		inp_map.set(users_inp[users_iter - 1], results_names);
+		list_inp += "Preference " + users_iter + " : " + results_names + "<br> <br>";
+
 		users_iter++;
+		}
 	}
 }
 
@@ -246,12 +274,19 @@ html, body, #map {
   padding: 6px 8px 6px 16px;
   text-decoration: none;
   font-size: 25px;
+  font-family: 'Source Sans Pro'
   color: #000000;
   display: block;
 }
 
 .sidenav h2 {
   text-align: center;
+  font-family: 'Source Sans Pro'
+}
+
+.sidenav h3 {
+  text-align: center;
+  font-family: 'Source Sans Pro'
 }
 
 		</style>
@@ -261,6 +296,9 @@ html, body, #map {
 		<div class="sidenav">
 			<h2>Top 5 Choices: </h2>
 			<p id="output"> Awaiting Search... </p>
+			<!-- NEW CODE -->
+			<h2> Restaurants Found for Each Preference: </h2>
+			<h3 id="list"> </h3>
 		</div>
 
 		<!-- <div id="map"> -->
