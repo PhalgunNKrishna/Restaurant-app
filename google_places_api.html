@@ -135,7 +135,9 @@ function callback(results, status) {
 				if (i >= final_rests.length){ 
 					break;
 				}
-				top_five += (i + 1) + ") " + final_rests[i].name + "<br>";
+				/* NEW CODE HERE: */
+				top_five += (i + 1) + ") " + final_rests[i].name + 
+				'<br>Directions: <a href="javascript:getDirections(\''+final_rests[i].geometry.location+'\')">To here<\/a> <br> <br>';
 			}
 
 			document.getElementById("output").innerHTML = top_five;
